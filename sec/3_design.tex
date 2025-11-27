@@ -1,0 +1,34 @@
+\section{Technical Design}
+\label{sec:design}
+
+\subsection{System Overview}
+\label{subsec:sys_overview}
+The rover is designed as three primary subsystems: the drivetrain system, the arm, and the science module. Totalling 35kg, the drivetrain system serves as the mobility platform and rover core, encompassing suspension, chassis, drive actuators, electrical box and power system, robot vision and communications. It provides a sturdy base for mounting the other two interchangeable subsystems—the arm and science module, each optimized for specific missions. The rover is powered by a 48V 22,000mAh battery, chosen for its efficiency in high-voltage applications, with power stepped down to supply the rest of the system. At the heart of the rover is a Jetson Xavier, which handles high-level tasks such as path planning, arm trajectory control, and science data collection. For robustness, a controller board based on the STM32L552 chip is included to take over in the event of a Jetson system failure.
+
+Fabrication of complex sheet metal designs for the electrical box and dimensionally critical parts was achieved through the team’s ProtoSpace sponsorship; all other components are manufactured in house by members and professionals at the UWaterloo Engineering machine shop. The chassis structure features carbon fiber members epoxied to aluminum joints, enabling modularity, ease of manufacturing, and assembly. ABS printed parts supplement and enclose the structural design. SLA printed TPU wheels were iterated to test important design improvements. A wheel testing jig is being developed to validate the implementation of molded polyurethane forms on the final product. The rover traverses terrain using a 6-wheel direct axial drive rocker bogie suspension with a differential bar. Each wheel actuator consists of a brushless DC motor, planetary gearbox, and incremental encoders. The drivetrain operates through an integrated velocity or position control loop using an ODrive motor controller. Users can interface with the system via joystick input for manual control or waypoint input for autonomous navigation, offering flexibility for different mission requirements.
+
+Communication within the rover is managed via shielded CAN and USB connectors, ensuring long-range signal integrity. Video data and rover status are transmitted back to the ground station using a 5.8GHz directional radio mounted on a single-axis gimbal, following the competition radio guidelines. An omnidirectional 900MHz radio is reserved for critical control commands and rover fail-safe monitoring. This dual communication system ensures reliable operation in diverse mission environments. The whole system is equipped with two E-Stops at the front and the back of the rover, providing an alternative to kill the rover operation in an emergency.
+
+The rover’s 6-Dof manipulator, designed and manufactured by students on campus, features brushless DC motors with encoder feedback and harmonics gearboxes for high gear ratio reduction. Joint localization is provided by absolute magnetic encoders and proximity limit switches for end-stop definition. This year’s design incorporates belt drives at various joints and a differential wrist to shift mass toward pivot points, reducing loading requirements on each arm axis and yet still be able to access all the defined arm workspace. The arm’s end effector uses compliant rubber pads to enhance grasp on irregular shapes like rocks and tools. It is controlled by an inverse kinematics solver implemented through the MoveIt API, interfacing with joysticks and a graphical interface for teleoperation. Joint control and loading performance will be tested before full assembly, with arm controls validated in Robot Operating System Simulation software RViz/Gazebo prior to deployment. 
+
+The science payload is designed to analyze the environment, collect soil samples, and conduct onboard tests to detect extant or extinct life. It features a 2-DoF microscope camera for detailed examination of rock surfaces, which the science team uses to identify potential fossils or other signs of life. Additionally, a 1-DoF sensor head collects initial data from soil samples, measuring humidity, methane, CO2, and temperature. Following initial analysis, soil samples are collected using a drill mechanism and suction tube and then deposited into test tubes for further examination. Ninhydrin tests are conducted to detect amino acids and proteins, indicating biological activity. The payload is controlled through a prototyped PCB and firmware interfacing with all sensors and actuators, with precise control facilitated via keyboard and controller commands. 
+
+The rover autonomy system comprises of 2 front Intel realsense D435 Depth camera running Yolo V7 model primarily used for object detection and avoidance. A 2 axis gimbal camera at the rear and a close up color camera mounted on the arm provides video feedback for the autonomy system to recognize the ARUCO tag and competition objects at the given location. These sensors also provide video feedback to the base station that is important for mission status validation.
+	UWRT recently completed all the mechanical design tasks and software research and development for all the main subsystems, and we are currently working on assembling the system and testing its integration to ensure its full functionality.
+
+% This section provides an in-depth overview of the rover system architecture and component integration
+
+\subsection{Competition Strategy}
+\label{subsec:comp_strategy}
+
+\subsection{Platform Architecture}
+\label{subsec:platform_architecture}
+
+A significant architectural change this year is the integration of QNX, our new sponsor providing embedded real-time operating system (RTOS) solutions. QNX is a microkernel-based RTOS optimized for low-latency, deterministic performance—critical for time-sensitive robotics applications.
+
+Previously, our rover relied on multiple discrete low-level hardware control boards, each with custom firmware. This year, we are consolidating the hardware stack by transitioning to off-the-shelf control boards (e.g., commercial development boards) that interface with a Raspberry Pi 4B running QNX. This unified architecture reduces firmware complexity, improves maintainability, and leverages QNX's robust real-time capabilities.
+
+Hardware boards communicate with the central compute module via standardized communication protocols: I2C for low-bandwidth sensor data, SPI for high-speed data transfers, and UART for serial debugging. This modular approach decouples hardware-specific logic from high-level control algorithms, enabling the team to develop and test components independently before system integration. 
+
+\subsection{Test and Validation}
+\label{subsec:test}
