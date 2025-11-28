@@ -6,5 +6,23 @@
 \section{Project Timeline}
 
 \section{system Architecture Diagrams}
-
-\section{rover Figures}
+% Where is the Science Module and Ground Station
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=1\textwidth]{figures/Rover System Diagram.png}
+    \caption{
+        This figure shows the main system diagram for the whole rover system. 
+        The center is the Electrical Box containing all the main electronics. 
+        BMS is for cell balancing. 
+        PD is for over-voltage protection, over-current protection, and state of charge monitoring. 
+        Jetson is our main controller solving all the kinematics. 
+        Raspberry Pi 4B loaded with QNX serves as an IO expansion board and low-level controller. 
+        Communication Module transmits UDP packets and communicates with the ground station. 
+        The Rear Sensing Module serves as an overview camera for livestreaming the rover status to the ground station. 
+        E-Stop performs the critical safety functionality and cuts the high power rail under emergency. 
+        Localization has a dual GPS + IMU configuration providing high accuracy location results after sensor fusion. 
+        Front Sensing uses two cameras to perform obstacle avoidance and path planning. 
+        Drivetrain and Arm systems are described in their own architecture diagrams.
+    }
+    \label{fig:rover_sys_arch}
+\end{figure}
