@@ -27,5 +27,4 @@ Our 6 wheeled, differential bar compensated rover-bogie chassis incorporating ca
 The arm mechanical structure and actuators remain unchanged from prior seasons. Hardware simplification this year includes integrating motor controller housings directly onto the arm, eliminating the need for a separate electrical enclosure and reducing wiring complexity. Software focus centers on improving kinematic localization accuracy through better arm integration with the global and local motion planner. We are configuring MoveIt2's hybrid planner to better coordinate arm dynamics. This season, our arm system more focus on the reliability over more advanced functionality.
 
 \subsubsection{Science}
-
-\subsubsection{Ground Station}
+Figure \ref{fig:rover_science_arch} shows the redesigned science payload architecture, organized into four subsystems: extraction, transport, sampling, and storage. The design emphasizes modularity, robustness, and simplicity for reliable autonomous operation. The sampling module is implemented as a sensor driver to minimize code change in the system.
