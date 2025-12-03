@@ -4,23 +4,27 @@
 \subsection{System Overview}
 \label{subsec:sys_overview}
 
-As illustrated in Figure \ref{fig:rover_sys_arch}, our rover is designed with three primary subsystems: a 35kg drivetrain with 6-wheel rocker bogie suspension powered by a 48V battery, a 6-DoF manipulator with brushless motor-encoder pairs, and a science payload featuring microscope imaging, environmental sensors, and soil sampling capabilities. Most of the rover hardware design is kept from the previous competition cycle, but the goal for this year is to make the design more like a product than a prototype.
+As illustrated in Figure \ref{fig:rover_sys_arch}, our rover is designed with three primary subsystems: a 35kg rocker bogie drivetrain powered by a 48V battery with a modular payload interface for a 6-DoF manipulator with brushless motor-encoder pairs, and a science payload featuring microscope imaging, environmental sensors, and soil sampling capabilities. Most of the rover hardware design is kept from the previous competition cycle, but with a major focus on system robustness and productization.
 
 \subsection{Season 2026 Updates}
 \label{subsec:update}
 
 \subsubsection{Compute Module}
-This competition season, our team has welcomed QNX as a key sponsor in our rover development. QNX provides a high-safety, low-latency, real-time operating system running on Raspberry Pi 4B boards with comprehensive support packages. Our key architectural change this year is to replace all low-level STM microcontrollers with two RPi boards serving as I/O expansion modules, enabling preprocessing of sensor data before transmission to Jetson, our main compute module. This preprocessing layer improves system reliability and latency. We continue to use Jetson with ROS2 Humble as our main compute platform, as this solution has proven reliable and effective in previous seasons.
+The compute architecture uses a Jetson Orin Nano running ROS2 Humble for high-level autonomy and vision processing (reused from prior seasons), paired with two Raspberry Pi 4B boards running QNX RTOS as new dedicated I/O modules for deterministic sensor preprocessing and motor control. This replaces our previous distributed STM32 network.
 
 \subsubsection{Power System}
+Power distribution architecture remains largely unchanged. We standardized all connection by adopting JST connectors for board-to-board cases, XT connectors for high-current connectors, and RS232 for long-distance signal distribution, eliminating the complexity of our previous mixed-vendor approach.
 
 \subsubsection{Communication}
+Board-to-board communication migrates from UART/I2C to Ethernet with DDS middleware through ROS2. QNX's native IPC mechanism handles intra-board communication on Raspberry Pi boards for high bandwidth, low-latancy sensor messages.
 
-This year instead of implementing both LCM and DDS for comms although the hardware are the same, we are going to unify all the comms.
 
 \subsubsection{Drivetrain}
+Our 6 wheeled, differential bar compensated rover-bogie chassis incorporating carbon fiber members and aluminum end joints was reused  this competition cycle.  System validation shortcomings are addressed with the development of new TPU wheel geometry,  modularity of drive servos and active steered drive wheels, allowing for kinematic compensation and improving terrain manuverability and robustness. Motor controllers are upgraded from legacy ODrive to ODrive S1s with better fault handling and GUI support. NAV2 path planning and ROS2control differential drive remain our control stack, with odometry fused from encoders and IMU + GPS through robot\_localization to correct drift during autonomous missions.
 
 \subsubsection{Arm}
+
+The arm mechanical structure and actuators remain unchanged from prior seasons. Hardware simplification this year includes integrating motor controller housings directly onto the arm, eliminating the need for a separate electrical enclosure and reducing wiring complexity. Software focus centers on improving kinematic localization accuracy through better arm integration with the global and local motion planner. We are configuring MoveIt2's hybrid planner to better coordinate arm dynamics. This season, our arm system more focus on the reliability over more advanced functionality.
 
 \subsubsection{Science}
 
